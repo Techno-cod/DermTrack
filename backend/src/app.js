@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const authMiddleware = require("./middleware/authMiddleware");
 
 require("dotenv").config();
 console.log("URL:", process.env.DATABASE_URL);
@@ -36,6 +37,16 @@ app.get("/", async (req, res) => {
     });
   }
 });
+app.get(
+  "/api/profile",
+  authMiddleware,
+  (req, res) => {
+    res.json({
+      message: "Protected Route Accessed",
+      user: req.user,
+    });
+  }
+);
 
 const PORT = process.env.PORT || 5001;
 
