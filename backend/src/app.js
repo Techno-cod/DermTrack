@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const pool = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
 
 require("dotenv").config();
 console.log("URL:", process.env.DATABASE_URL);
@@ -9,6 +10,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/auth", authRoutes);
 
 app.get("/", async (req, res) => {
   try {
