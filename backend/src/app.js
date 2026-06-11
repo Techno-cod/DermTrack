@@ -3,6 +3,7 @@ const cors = require("cors");
 const pool = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
+const entryRoutes = require("./routes/entryRoutes");
 
 require("dotenv").config();
 console.log("URL:", process.env.DATABASE_URL);
@@ -12,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
+app.use("/api/entries", entryRoutes);
 
 app.get("/", async (req, res) => {
   try {
