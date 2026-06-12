@@ -1,4 +1,5 @@
 const cloudinary = require("../services/cloudinaryService");
+const pool = require("../config/db");
 
 const uploadPhoto = async (req, res) => {
   try {
@@ -9,17 +10,37 @@ const uploadPhoto = async (req, res) => {
     }
 
     const result = await cloudinary.uploader.upload(
-      req.file.path,
-      {
-        folder: "dermtrack",
-      }
-    );
+  req.file.path,
+  {
+    folder: "dermtrack",
+  }
+);
 
-    return res.status(201).json({
-      message: "Photo uploaded successfully",
-      imageUrl: result.secure_url,
-      publicId: result.public_id,
-    });
+const entry = await pool.query(
+  `
+  INSERT INTO skin_entries
+  (
+    user_id,
+    cloudinary_url,
+    scoring_status,
+    condition_type,
+    taken_at
+  )
+  VALUES ($1,$2,$3,$4,NOW())
+  RETURNING *
+  `,
+  [
+    req.user.userId,
+    result.secure_url,
+    "pending",
+    "acne",
+  ]
+);
+
+return res.status(201).json({
+  message: "Photo uploaded successfully",
+  entry: entry.rows[0],
+});
   } catch (error) {
     console.error(error);
 
@@ -28,7 +49,31 @@ const uploadPhoto = async (req, res) => {
     });
   }
 };
+const getEntries = async (req, res) => {
+  try {
+    const entries = await pool.query(
+      `
+      SELECT *
+      FROM skin_entries
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      `,
+      [req.user.userId]
+    );
+
+    return res.json({
+      entries: entries.rows,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Failed to fetch entries",
+    });
+  }
+};
 
 module.exports = {
   uploadPhoto,
+  getEntries,
 };
