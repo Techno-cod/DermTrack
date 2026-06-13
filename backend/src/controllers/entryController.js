@@ -1,6 +1,7 @@
 const cloudinary = require("../services/cloudinaryService");
 const pool = require("../config/db");
 
+
 const uploadPhoto = async (req, res) => {
   try {
     if (!req.file) {
@@ -11,31 +12,39 @@ const uploadPhoto = async (req, res) => {
 
     const result = await cloudinary.uploader.upload(
   req.file.path,
+  
   {
+    
     folder: "dermtrack",
   }
 );
 
 const entry = await pool.query(
+  
   `
-  INSERT INTO skin_entries
-  (
-    user_id,
-    cloudinary_url,
-    scoring_status,
-    condition_type,
-    taken_at
-  )
-  VALUES ($1,$2,$3,$4,NOW())
+ INSERT INTO skin_entries
+(
+  user_id,
+  cloudinary_url,
+  scoring_status,
+  condition_type,
+  notes,
+  acne_score,
+  taken_at
+)
+VALUES ($1,$2,$3,$4,$5,$6,NOW())
   RETURNING *
   `,
   [
-    req.user.userId,
-    result.secure_url,
-    "pending",
-    "acne",
-  ]
+  req.user.userId,
+  result.secure_url,
+  "pending",
+  "acne",
+  req.body.notes,
+  Number(req.body.acneScore),
+]
 );
+console.log("DB Insert Success");
 
 return res.status(201).json({
   message: "Photo uploaded successfully",
