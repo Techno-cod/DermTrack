@@ -6,6 +6,7 @@ const router = express.Router();
 const {
   uploadPhoto,
   getEntries,
+  deleteEntry,
 } = require("../controllers/entryController");
 
 const authMiddleware = require("../middleware/authMiddleware");
@@ -25,5 +26,9 @@ router.get(
   authMiddleware,
   getEntries
 );
-
+router.delete(
+  "/:id",
+  authMiddleware,
+  deleteEntry
+);
 module.exports = router;

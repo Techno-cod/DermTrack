@@ -42,3 +42,19 @@ export const getEntries = async (token) => {
 
   return response.data.entries;
 };
+
+export const deleteEntry = async (
+  id,
+  token
+) => {
+  const response = await API.delete(
+    `/entries/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};

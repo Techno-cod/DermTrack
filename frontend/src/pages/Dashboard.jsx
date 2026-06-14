@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   getEntries,
   uploadEntry,
+  deleteEntry,
 } from "../services/api";
 function Dashboard() {
   const [acneScore, setAcneScore] = useState(6);
@@ -251,9 +252,7 @@ await uploadEntry(
          {new Date(entry.created_at).toLocaleDateString()}
        </p>
 
-        <h4 className="font-semibold">
-           {entry.notes?.slice(0, 30) || "Skin Entry"}
-       </h4>
+
         <h4 className="font-semibold">
   Acne Score: {entry.acne_score}/10
 </h4>
@@ -261,6 +260,31 @@ await uploadEntry(
         <p className="text-gray-600 text-sm">
           {entry.notes}
         </p>
+     
+
+<button
+  onClick={async () => {
+    try {
+      const token =
+        localStorage.getItem("token");
+
+      await deleteEntry(
+        entry.id,
+        token
+      );
+
+      const updatedEntries =
+        await getEntries(token);
+
+      setEntries(updatedEntries);
+    } catch (error) {
+      console.error(error);
+    }
+  }}
+  className="mt-2 text-red-500 text-sm"
+>
+  Delete
+</button>
       </div>
     </div>
   ))}

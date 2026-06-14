@@ -83,8 +83,40 @@ const getEntries = async (req, res) => {
     });
   }
 };
+const deleteEntry = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      `
+      DELETE FROM skin_entries
+      WHERE id = $1
+      AND user_id = $2
+      RETURNING *
+      `,
+      [id, req.user.userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Entry not found",
+      });
+    }
+
+    return res.json({
+      message: "Entry deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Failed to delete entry",
+    });
+  }
+};
 
 module.exports = {
   uploadPhoto,
   getEntries,
+  deleteEntry,
 };
