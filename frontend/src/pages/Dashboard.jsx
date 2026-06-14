@@ -226,12 +226,12 @@ await uploadEntry(
 
       <div>
         <p className="text-sm text-gray-500">
-          {entry.date}
-        </p>
+         {new Date(entry.created_at).toLocaleDateString()}
+       </p>
 
         <h4 className="font-semibold">
-          New Skin Entry
-        </h4>
+           {entry.notes?.slice(0, 30) || "Skin Entry"}
+       </h4>
         <h4 className="font-semibold">
   Acne Score: {entry.acne_score}/10
 </h4>
