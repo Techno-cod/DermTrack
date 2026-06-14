@@ -1,5 +1,6 @@
 const cloudinary = require("../services/cloudinaryService");
 const pool = require("../config/db");
+const fs = require("fs");
 
 
 const uploadPhoto = async (req, res) => {
@@ -18,6 +19,7 @@ const uploadPhoto = async (req, res) => {
     folder: "dermtrack",
   }
 );
+fs.unlinkSync(req.file.path);
 
 const entry = await pool.query(
   

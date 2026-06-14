@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../services/authService";
 import womanArt from "../assets/woman.png";
 function LoginPage() {
@@ -111,8 +111,14 @@ function LoginPage() {
 >
   Sign In
 </button>
-            <p className="text-sm text-center text-gray-500 mt-4">
-  New here? <span className="text-[#6F8E85] font-medium">Create account</span>
+     <p className="text-sm text-center text-gray-500 mt-4">
+  New here?{" "}
+  <Link
+    to="/register"
+    className="text-[#6F8E85] font-medium hover:underline"
+  >
+    Create Account
+  </Link>
 </p>
           </div>
         </div>

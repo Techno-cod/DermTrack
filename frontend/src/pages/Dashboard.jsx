@@ -1,5 +1,6 @@
 import skin1 from "../assets/skin1.jpg";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   getEntries,
   uploadEntry,
@@ -7,9 +8,17 @@ import {
 function Dashboard() {
   const [acneScore, setAcneScore] = useState(6);
   const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [notes, setNotes] = useState("");
   const [entries, setEntries] = useState([]);
+    useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    navigate("/login");
+  }
+}, [navigate]);
   useEffect(() => {
   const fetchEntries = async () => {
     try {
@@ -23,15 +32,11 @@ function Dashboard() {
     }
   };
 
+
   fetchEntries();
 }, []);
   const latestEntry = entries[0];
-  useEffect(() => {
-  localStorage.setItem(
-    "entries",
-    JSON.stringify(entries)
-  );
-}, [entries]);
+ 
 useEffect(() => {
   console.log(
     "selectedImageFile changed:",
@@ -44,12 +49,29 @@ useEffect(() => {
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
-        <div className="mb-10">
-          <p className="text-gray-500">Welcome back 👋</p>
-          <h1 className="text-5xl font-bold text-[#1F2A44]">
-            Your Skin Journey
-          </h1>
-        </div>
+        <div className="mb-10 flex justify-between items-center">
+
+  <div>
+    <p className="text-gray-500">
+      Welcome back 👋
+    </p>
+
+    <h1 className="text-5xl font-bold text-[#1F2A44]">
+      Your Skin Journey
+    </h1>
+  </div>
+
+  <button
+    onClick={() => {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }}
+    className="px-5 py-3 bg-red-500 text-white rounded-xl"
+  >
+    Logout
+  </button>
+
+</div>
 
         {/* Grid */}
         <div className="grid grid-cols-12 gap-6">
@@ -184,22 +206,22 @@ await uploadEntry(
 
   <div className="bg-[#F8F7F3] rounded-xl p-4">
     <p className="text-gray-500 text-sm">
-      Hydration
+        Total Entries
     </p>
 
     <h3 className="text-2xl font-bold text-[#1F2A44]">
-      Good
+        {entries.length}
     </h3>
   </div>
 
   <div className="bg-[#F8F7F3] rounded-xl p-4">
     <p className="text-gray-500 text-sm">
-      Active Concerns
-    </p>
+  Latest Entry
+</p>
 
-    <h3 className="text-2xl font-bold text-[#1F2A44]">
-      2
-    </h3>
+<h3 className="text-2xl font-bold text-[#1F2A44]">
+  {latestEntry ? "Available" : "None"}
+</h3>
   </div>
  
 

@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   return (
@@ -14,6 +15,10 @@ function App() {
       <Route
         path="/login"
         element={<LoginPage />}
+      />
+      <Route
+       path="/register"
+       element={<RegisterPage />}
       />
 
       <Route
