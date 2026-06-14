@@ -11,14 +11,13 @@ const uploadPhoto = async (req, res) => {
       });
     }
 
-    const result = await cloudinary.uploader.upload(
+const result = await cloudinary.uploader.upload(
   req.file.path,
-  
   {
-    
     folder: "dermtrack",
   }
 );
+
 fs.unlinkSync(req.file.path);
 
 const entry = await pool.query(
@@ -53,12 +52,22 @@ return res.status(201).json({
   entry: entry.rows[0],
 });
   } catch (error) {
-    console.error(error);
+  console.error("FULL ERROR:", error);
 
-    return res.status(500).json({
-      message: "Upload failed",
-    });
-  }
+  console.error(
+    "Cloudinary Error Message:",
+    error.message
+  );
+
+  console.error(
+    "Cloudinary Response:",
+    error.error || error.response
+  );
+
+  return res.status(500).json({
+    message: "Upload failed",
+  });
+}
 };
 const getEntries = async (req, res) => {
   try {

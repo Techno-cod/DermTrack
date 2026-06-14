@@ -100,7 +100,7 @@ useEffect(() => {
      </p>
 
       <h3 className="text-xl font-semibold mt-2">
-        Mild Acne Flare-Up
+         Acne Score: {latestEntry?.acne_score || "-"} /10
       </h3>
 
       <p className="text-gray-600 mt-3 max-w-sm">
