@@ -285,12 +285,6 @@ function Dashboard() {
   <p className="text-sm text-gray-400 mb-4">
     Log your skincare routine, sleep, water, stress and mood daily.
   </p>
-  <button
-    onClick={() => navigate("/journal")}
-    className="w-full py-3 bg-[#8FA58B] text-white rounded-xl font-medium hover:opacity-90"
-  >
-    Open Journal →
-  </button>
   <div className="flex gap-3 mt-3">
   <button
     onClick={() => navigate("/journal")}
