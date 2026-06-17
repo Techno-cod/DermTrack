@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Python
+ml-service/venv/
+ml-service/__pycache__/
+**/__pycache__/
+*.pyc

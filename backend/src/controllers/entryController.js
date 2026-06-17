@@ -1,6 +1,48 @@
 const cloudinary = require("../services/cloudinaryService");
 const pool = require("../config/db");
 const fs = require("fs");
+const rescoreEntry = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const existing = await pool.query(
+      `SELECT * FROM skin_entries WHERE id = $1 AND user_id = $2`,
+      [id, req.user.userId]
+    );
+
+    if (existing.rows.length === 0) {
+      return res.status(404).json({ message: "Entry not found" });
+    }
+
+    const target = existing.rows[0];
+
+    const mlResponse = await fetch(`${process.env.ML_SERVICE_URL}/score`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(30000),
+      body: JSON.stringify({
+        entry_id: target.id,
+        image_url: target.cloudinary_url,
+      }),
+    });
+
+    if (!mlResponse.ok) throw new Error(`ML service returned ${mlResponse.status}`);
+
+    const mlData = await mlResponse.json();
+
+    const updated = await pool.query(
+      `UPDATE skin_entries
+         SET severity_score = $1, confidence_score = $2, scoring_status = 'completed'
+       WHERE id = $3 RETURNING *`,
+      [mlData.score, mlData.confidence, target.id]
+    );
+
+    return res.json({ message: "Rescored", entry: updated.rows[0] });
+  } catch (error) {
+    console.error("Rescore failed:", error.message);
+    return res.status(500).json({ message: "Rescore failed" });
+  }
+};
 
 
 const uploadPhoto = async (req, res) => {
@@ -47,9 +89,47 @@ VALUES ($1,$2,$3,$4,$5,$6,NOW())
 );
 console.log("DB Insert Success");
 
+let finalEntry = entry.rows[0];
+
+// Score the entry synchronously via FastAPI
+try {
+  const mlResponse = await fetch(`${process.env.ML_SERVICE_URL}/score`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    signal: AbortSignal.timeout(30000),
+    body: JSON.stringify({
+      entry_id: finalEntry.id,
+      image_url: finalEntry.cloudinary_url,
+    }),
+  });
+
+  if (!mlResponse.ok) throw new Error(`ML service returned ${mlResponse.status}`);
+
+  const mlData = await mlResponse.json();
+
+  const updated = await pool.query(
+    `UPDATE skin_entries
+       SET severity_score = $1, confidence_score = $2, scoring_status = 'completed'
+     WHERE id = $3
+     RETURNING *`,
+    [mlData.score, mlData.confidence, finalEntry.id]
+  );
+
+  finalEntry = updated.rows[0];
+  console.log("ML scoring complete:", mlData.score);
+} catch (mlError) {
+  console.error("ML scoring failed:", mlError.message);
+
+  const failed = await pool.query(
+    `UPDATE skin_entries SET scoring_status = 'failed' WHERE id = $1 RETURNING *`,
+    [finalEntry.id]
+  );
+  finalEntry = failed.rows[0];
+}
+
 return res.status(201).json({
   message: "Photo uploaded successfully",
-  entry: entry.rows[0],
+  entry: finalEntry,
 });
   } catch (error) {
   console.error("FULL ERROR:", error);
@@ -123,9 +203,9 @@ const deleteEntry = async (req, res) => {
     });
   }
 };
-
 module.exports = {
   uploadPhoto,
   getEntries,
   deleteEntry,
+  rescoreEntry,
 };

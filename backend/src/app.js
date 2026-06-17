@@ -4,6 +4,8 @@ const pool = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 const entryRoutes = require("./routes/entryRoutes");
+const journalRoutes = require("./routes/journalRoutes");
+const insightsRoutes = require("./routes/insightsRoutes");
 
 require("dotenv").config();
 console.log("URL:", process.env.DATABASE_URL);
@@ -14,6 +16,8 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/entries", entryRoutes);
+app.use("/api/journal", journalRoutes);
+app.use("/api/insights", insightsRoutes);
 
 app.get("/", async (req, res) => {
   try {
