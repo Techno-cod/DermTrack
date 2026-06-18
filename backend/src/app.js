@@ -8,11 +8,16 @@ const journalRoutes = require("./routes/journalRoutes");
 const insightsRoutes = require("./routes/insightsRoutes");
 
 require("dotenv").config();
-console.log("URL:", process.env.DATABASE_URL);
+
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(",")
+    : "http://localhost:5173",
+  credentials: true,
+}));
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/entries", entryRoutes);
