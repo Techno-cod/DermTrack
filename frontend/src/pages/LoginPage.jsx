@@ -10,10 +10,9 @@ function LoginPage() {
 
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F7F4EE] via-[#F4F2EC] to-[#EEF3ED] flex items-start justify-center px-6">
+    <div className="min-h-screen bg-[#F7F4EE] flex items-center justify-center px-6 overflow-hidden">
       <div className="max-w-7xl w-full grid md:grid-cols-2 gap-24 items-center">
 
-        {/* Left Section */}
   
         {/* Left Section */}
 <div className="relative">
@@ -31,28 +30,40 @@ function LoginPage() {
     blur-3xl
   "
 ></div>
+
 <img
   src={womanArt}
   alt="DermTrack"
   className="
     absolute
-    left-8
-    top-40
-    w-[450px]
-    opacity-10
-    mix-blend-multiply
+    -left-10
+    top-8
+    w-[550px]
+    opacity-[0.06]
     pointer-events-none
     select-none
   "
 />
+<div
+  className="
+    absolute
+    left-20
+    top-48
+    w-[400px]
+    h-[400px]
+    rounded-full
+    bg-white/40
+    blur-3xl
+  "
+></div>
 
   {/* Content */}
-  <div className="relative z-10">
+  <div className="relative z-10 -translate-y-12">
     <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/60 backdrop-blur-md text-sm text-gray-600 mb-8">
       ✦ Personal Skin Journal
     </div>
 
-    <h1 className="text-8xl font-bold text-[#1F2A44] leading-none mb-6">
+    <h1 className="text-7xl font-bold text-[#1F2A44] leading-none mb-6">
       DermTrack
     </h1>
 
@@ -67,7 +78,7 @@ function LoginPage() {
 
 
         {/* Right Section */}
-        <div className="mt-16 bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_40px_120px_rgba(0,0,0,0.10)] p-7 max-w-[380px] w-full">
+        <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_40px_120px_rgba(0,0,0,0.10)] p-7 max-w-[420px] w-full">
           <h2 className="text-3xl font-semibold mb-8 text-gray-800">
             Welcome Back
           </h2>
@@ -124,7 +135,7 @@ function LoginPage() {
   Use Demo Account
 </button>
 
-<div className="mt-3 p-3 bg-[#F8F7F3] rounded-xl text-sm text-gray-600">
+<div className="mt-3 p-2.5 bg-[#F8F7F3] rounded-xl text-xs text-gray-600">
   <p className="font-medium mb-2">
     Demo Credentials
   </p>
