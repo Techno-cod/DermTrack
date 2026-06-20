@@ -5,6 +5,8 @@ import womanArt from "../assets/woman.png";
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showDemoPassword, setShowDemoPassword] =
+  useState(false);
 
   const navigate = useNavigate();
   return (
@@ -111,7 +113,47 @@ function LoginPage() {
 >
   Sign In
 </button>
-     <p className="text-sm text-center text-gray-500 mt-4">
+
+<button
+  onClick={() => {
+    setEmail("demo@dermtrack.app");
+    setPassword("Demo1234!");
+  }}
+  className="w-full mt-3 bg-[#EEF3ED] text-[#6F8E85] py-2 rounded-xl text-sm font-medium hover:opacity-90"
+>
+  Use Demo Account
+</button>
+
+<div className="mt-3 p-3 bg-[#F8F7F3] rounded-xl text-sm text-gray-600">
+  <p className="font-medium mb-2">
+    Demo Credentials
+  </p>
+
+  <p>Email: demo@dermtrack.app</p>
+
+  <div className="flex items-center justify-between mt-1">
+    <span>
+      Password:{" "}
+      {showDemoPassword
+        ? "Demo1234!"
+        : "•••••••"}
+    </span>
+
+    <button
+      onClick={() =>
+        setShowDemoPassword(
+          !showDemoPassword
+        )
+      }
+      className="text-[#6F8E85] text-xs hover:underline"
+    >
+      {showDemoPassword
+        ? "Hide"
+        : "Show"}
+    </button>
+  </div>
+</div>
+<p className="text-sm text-center text-gray-500 mt-4">
   New here?{" "}
   <Link
     to="/register"
